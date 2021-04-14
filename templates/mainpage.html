@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='mainpage.css') }}" type="text/css">
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <title>Mainpage</title>
+</head>
+<body>
+<!-- navigator on the left-->
+<div id="menu">
+    <!--menu-->
+    <div id="open">
+        <div class="navH">
+            COVID19-DASHBOARD
+        </div>
+        <div class="navBox">
+            <h2 class="obtain" onclick="showAtRight('list/Medicine')">Medicine<i></i></h2>
+            <h2 class="obtain" onclick="showAtRight('list/Takeout')">Takeout<i></i></h2>
+            <h2 class="obtain" onclick="showAtRight('list/News')">News<i></i></h2>
+            <h2 class="obtain" onclick="showAtRight('list/Trips')">Trips<i></i></h2>
+        </div>
+    </div>
+</div>
+
+
+<!-- Right part-->
+<div id="rightContent">
+    <h2>test</h2>
+</div>
+</body>
+<script>
+userid = {{userid}}
+function showAtRight(url){
+                $.ajax({
+                    type :"GET",
+                    url : url+'/'+{{userid}},
+                    dataType:"html",
+                    success : function(data) {
+                        $("#rightContent").html(data);
+                    },
+                    error:function(){
+                        $("#rightContent").html("Access data error！");
+                    }
+                });
+            }
+
+</script>
+</html>
