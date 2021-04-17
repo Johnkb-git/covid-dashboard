@@ -19,6 +19,8 @@
     z-index: 1000;
     width: auto;
 }
+
+
 .message > .message-close-btn {
     position: absolute;
     right: 15px;
