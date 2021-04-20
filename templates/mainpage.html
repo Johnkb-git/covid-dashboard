@@ -9,11 +9,15 @@
             rel="stylesheet"
     />
     <link rel="stylesheet" href="{{ url_for('static', filename='tailwind.output.css') }}" type="text/css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css">
     <script
             src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
-            defer
+            defer=""
     ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" defer=""></script>
     <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="{{url_for('static',filename = 'init-alpine.js')}}"></script>
+<!--    <script src="{{url_for('static',filename = 'charts-lines.js')}}" defer=""></script>-->
     <script src="{{url_for('static',filename = 'init-alpine.js')}}"></script>
 </head>
 <body onload="showAtRight('list/medicine')">
@@ -134,7 +138,7 @@
                     <button
                             class="flex items-center justify-between w-full px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
                             id="medicine_button"
-                            onclick="show_medicine_form()"
+                            onclick="show_medicine_form_div()"
                     >
                         Add a medicine record
                         <span class="ml-2" aria-hidden="true">+</span>
@@ -142,7 +146,7 @@
                     <button
                             class="flex items-center justify-between w-full px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
                             id="news_button"
-                            onclick="show_news_form()"
+                            onclick="show_news_form_div()"
                     >
                         Report news
                         <span class="ml-2" aria-hidden="true">+</span>
@@ -150,7 +154,7 @@
                     <button
                             class="flex items-center justify-between w-full px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
                             id="takeout_button"
-                            onclick="show_takeout_form()"
+                            onclick="show_takeout_form_div()"
                     >
                         Add a takeout
                         <span class="ml-2" aria-hidden="true">+</span>
@@ -158,36 +162,12 @@
                     <button
                             class="flex items-center justify-between w-full px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
                             id="trip_button"
-                            onclick="show_trip_form()"
+                            onclick="show_trip_form_div()"
                     >
                         Add a trip
                         <span class="ml-2" aria-hidden="true">+</span>
                     </button>
                 </div>
-                <!--            <div class="px-6 my-6">-->
-                <!--                <button-->
-                <!--                        class="flex items-center justify-between w-full px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"-->
-                <!--                >-->
-                <!--                    Report news-->
-                <!--                    <span class="ml-2" aria-hidden="true">+</span>-->
-                <!--                </button>-->
-                <!--            </div>-->
-                <!--            <div class="px-6 my-6">-->
-                <!--                <button-->
-                <!--                        class="flex items-center justify-between w-full px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"-->
-                <!--                >-->
-                <!--                    Add a takeout-->
-                <!--                    <span class="ml-2" aria-hidden="true">+</span>-->
-                <!--                </button>-->
-                <!--            </div>-->
-                <!--            <div class="px-6 my-6">-->
-                <!--                <button-->
-                <!--                        class="flex items-center justify-between w-full px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"-->
-                <!--                >-->
-                <!--                    Add a trip-->
-                <!--                    <span class="ml-2" aria-hidden="true">+</span>-->
-                <!--                </button>-->
-                <!--            </div>-->
             </div>
         </aside>
         <div class="flex flex-col flex-1 w-full">
@@ -429,9 +409,50 @@
 
                 </div>
             </main>
+
             <!--                    input form for medicine-->
 
-            <div class="form" id="medicine_form">
+            <div class="form" id="medicine_form_div">
+                <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+                    <form action="http://localhost:5000/post/medicine/{{userid}}" method="post" id="medicine_form">
+                        <label class="block text-sm">
+                            <div style="width:50%; float:left; padding-right: 1rem;">
+                                <span class="text-gray-700 dark:text-gray-400">Name</span>
+                                <input class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                                       name="medicine_name">
+                            </div>
+                            <div style="width:50%; float:right; padding-left: 1rem;">
+                                <span class="text-gray-700 dark:text-gray-400">Date</span>
+                                <input class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                                       placeholder="mm/dd/yyyy"
+                                       name="date">
+                            </div>
+                        </label>
+
+                        <label class="block mt-4 text-sm">
+                            <span class="text-gray-700 dark:text-gray-400">Note</span>
+                            <textarea
+                                    class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-textarea focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                                    rows="3" placeholder="Enter some long form content."
+                                    name="note"></textarea>
+                        </label>
+                        <div style="text-align:right;margin-top: .40rem">
+                            <button class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+                                    onclick="close_medicine_form_div()"
+                                    type="reset">
+                                Cancel
+                            </button>
+                            <button class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+                                    type="button"
+                                    id="submit_medicine">
+                                Confirm
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="form" id="takeout_form_div">
                 <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
                     <label class="block text-sm">
                         <div style="width:50%; float:left; padding-right: 1rem;">
@@ -453,7 +474,7 @@
                     </label>
                     <div style="text-align:right;margin-top: .40rem">
                         <button class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
-                        onclick="close_medicine_form()">
+                                onclick="close_takeout_form_div()">
                             Cancel
                         </button>
                         <button class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
@@ -463,39 +484,7 @@
                 </div>
             </div>
 
-            <div class="form" id="takeout_form">
-                <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
-                    <label class="block text-sm">
-                        <div style="width:50%; float:left; padding-right: 1rem;">
-                            <span class="text-gray-700 dark:text-gray-400">Name</span>
-                            <input class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
-                        </div>
-                        <div style="width:50%; float:right; padding-left: 1rem;">
-                            <span class="text-gray-700 dark:text-gray-400">Date</span>
-                            <input class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                                   placeholder="mm/dd/yyyy">
-                        </div>
-                    </label>
-
-                    <label class="block mt-4 text-sm">
-                        <span class="text-gray-700 dark:text-gray-400">Note</span>
-                        <textarea
-                                class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-textarea focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
-                                rows="3" placeholder="Enter some long form content."></textarea>
-                    </label>
-                    <div style="text-align:right;margin-top: .40rem">
-                        <button class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
-                        onclick="close_takeout_form()">
-                            Cancel
-                        </button>
-                        <button class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-                            Confirm
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form" id="news_form">
+            <div class="form" id="news_form_div">
                 <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
                     <div class="mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">
@@ -535,7 +524,7 @@
                     </label>
                     <div style="text-align:right;margin-top: .40rem">
                         <button class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
-                        onclick="close_news_form()">
+                                onclick="close_news_form_div()">
                             Cancel
                         </button>
                         <button class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
@@ -545,7 +534,7 @@
                 </div>
             </div>
 
-            <div class="form" id="trip_form">
+            <div class="form" id="trip_form_div">
                 <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
                     <label class="block text-sm">
                         <div style="width:50%; float:left; padding-right: 1rem;">
@@ -567,7 +556,7 @@
                     </label>
                     <div style="text-align:right;margin-top: .40rem">
                         <button class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
-                        onclick="close_trip_form()">
+                                onclick="close_trip_form_div()">
                             Cancel
                         </button>
                         <button class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
@@ -586,7 +575,7 @@
 
 </body>
 <script>
-userid = {{userid}}
+var userid = "{{userid}}"
 var medicine_button = document.getElementById("medicine_button");
 var news_button = document.getElementById("news_button");
 var trip_button = document.getElementById("trip_button");
@@ -594,7 +583,7 @@ var takeout_button = document.getElementById("takeout_button");
 function showAtRight(url){
                 $.ajax({
                     type :"GET",
-                    url : url+'/'+{{userid}},
+                    url : url + '/'+userid,
                     dataType:"html",
                     success : function(data) {
                         $("#table").html(data);
@@ -635,47 +624,72 @@ function blockButtons(url){
     }
 }
 
-var medicine_form = document.getElementById("medicine_form");
-var takeout_form = document.getElementById("takeout_form");
-var news_form = document.getElementById("news_form");
-var trip_form = document.getElementById("trip_form");
+var medicine_form_div = document.getElementById("medicine_form_div");
+var takeout_form_div = document.getElementById("takeout_form_div");
+var news_form_div = document.getElementById("news_form_div");
+var trip_form_div = document.getElementById("trip_form_div");
 var mask = document.getElementById("mask");
 
-function show_medicine_form(){
-    medicine_form.style.display = "block";
+function show_medicine_form_div(){
+    medicine_form_div.style.display = "block";
     mask.style.display = "block";
 }
-function close_medicine_form(){
-    medicine_form.style.display = "none";
+function close_medicine_form_div(){
+    medicine_form_div.style.display = "none";
     mask.style.display = "none";
 }
 
-function show_takeout_form(){
-    takeout_form.style.display = "block";
+function show_takeout_form_div(){
+    takeout_form_div.style.display = "block";
     mask.style.display = "block";
 }
-function close_takeout_form(){
-    takeout_form.style.display = "none";
+function close_takeout_form_div(){
+    takeout_form_div.style.display = "none";
     mask.style.display = "none";
 }
 
-function show_news_form(){
-    news_form.style.display = "block";
+function show_news_form_div(){
+    news_form_div.style.display = "block";
     mask.style.display = "block";
 }
-function close_news_form(){
-    news_form.style.display = "none";
+function close_news_form_div(){
+    news_form_div.style.display = "none";
     mask.style.display = "none";
 }
 
-function show_trip_form(){
-    trip_form.style.display = "block";
+function show_trip_form_div(){
+    trip_form_div.style.display = "block";
     mask.style.display = "block";
 }
-function close_trip_form(){
-    trip_form.style.display = "none";
+function close_trip_form_div(){
+    trip_form_div.style.display = "none";
     mask.style.display = "none";
 }
+
+
+$(function() {
+    $("#submit_medicine").on('click', function() {
+      close_medicine_form_div()
+      var data = new FormData($("#medicine_form")[0]);
+      $.ajax({
+        type: 'POST',
+        dataType: 'html',
+        processData: false,
+        contentType: false,
+        data: data,
+        url: '/post/medicine/'+userid,
+        success : function(res) {
+                console.log('test')
+                console.log(res);
+               $("#table").html(res);
+        },
+            error: function(e) {
+                console.log("error")
+            },
+      })
+    })
+  })
+
 
 
 
@@ -712,6 +726,10 @@ function close_trip_form(){
     width: auto;
     display: none;
 }
+
+
+
+
 
 
 
